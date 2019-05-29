@@ -6,7 +6,13 @@ const port = 3000;
 
 app.use(express.json());
 
-app.listen(port);
+app.listen(port, function(err) {
+    if(err){
+       console.log(err);
+       } else {
+       console.log("Listening on port: " + port);
+    }
+});
 
 
 app.post('/', (req, res, next) => {
