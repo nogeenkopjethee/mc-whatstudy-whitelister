@@ -15,7 +15,7 @@ app.listen(port, function(err) {
 });
 
 
-app.post('/', (req, res, next) => {
+app.post('/mcwsapi/add', (req, res, next) => {
     var username;
     var token;
     var userId;
