@@ -8,7 +8,8 @@ app.use(express.json());
 
 app.listen(port);
 
-app.post('/', (req, res) => {
+
+app.post('/', (req, res, next) => {
     var username;
     var token;
     var userId;
@@ -17,20 +18,19 @@ app.post('/', (req, res) => {
     function usernameCheck() {
         axios.get('https://api.mojang.com/users/profiles/minecraft/' + username)
             .then(response => {
-                if (response.status === 204) {
-                    res.status(403).send("Username not checked");
+                if (response.status === 200) {
+                    console.log(response.data.id);
+                    uuid = response.data.id;
+                    userId = uuid.substring(0, 8) + "-" + uuid.substring(8, 12) + "-" + uuid.substring(12, 16) + "-" + uuid.substring(16, 20) + "-" + uuid.substring(20, 32);
+                    tokenCheck();
+                } else {
+                    next("Username not found.");
                 }
-                
-                console.log(response.data.id);
-                uuid = response.data.id;
-                userId = uuid.substring(0, 8) + "-" + uuid.substring(8, 12) + "-" + uuid.substring(12, 16) + "-" + uuid.substring(16, 20) + "-" + uuid.substring(20, 32);
-                tokenCheck();
             })
             .catch(error => {
                 console.log(error);
-                // next(error);
-                res.status(403).send("Username not checked");
-
+                next(error);
+                // return next(new Error([error]));
             });
     }
 
@@ -39,12 +39,11 @@ app.post('/', (req, res) => {
             .then(response => {
                 console.log(response.data.id);
                 studentNumber = response.data.id;
-                validateStudentNumber();
+                validateStudentNumber()
             })
             .catch(error => {
                 console.log(error);
-                // next(error);
-                res.status(403).send("Token not checked.");
+                next(error);
             });
     }
 
@@ -56,7 +55,7 @@ app.post('/', (req, res) => {
                 listOfStudentNumbers.push(entry.studentNumber);
             });
             if (listOfStudentNumbers.includes(studentNumber)) {
-                res.status(403).send("This student number already exists");
+                next(error);
             } else {
                 appendToWhitelist();
             }
@@ -73,10 +72,10 @@ app.post('/', (req, res) => {
             };
             json.push(toAdd);
 
-            fs.writeFile("whitelist.json", JSON.stringify(json), function (err, result) {
+            fs.writeFile("whitelist.json", JSON.stringify(json, null, 2), function (err, result) {
                 if (err) {
                     console.log('error', err);
-                    res.sendStatus(500);
+                    next(error);
                 }
             });
             res.send("Entry succesfully added to whitelist.");
@@ -87,7 +86,7 @@ app.post('/', (req, res) => {
     req.accepts('application/json');
     if (!req.is('application/json')) {
         // Send error here
-        res.sendStatus(400);
+        next(error);
     }
 
     // Part 1: checking if the token and username have a correct length
@@ -95,19 +94,8 @@ app.post('/', (req, res) => {
         username = req.body.username;
         token = req.body.token;
     } else {
-        res.sendStatus(403);
+        next(error);
     }
 
     usernameCheck();
-});
-
-
-// production error handler
-const HTTP_SERVER_ERROR = 500;
-app.use(function (err, req, res, next) {
-    if (res.headersSent) {
-        return next(err);
-    }
-
-    return res.status(err.status || HTTP_SERVER_ERROR).render('500');
 });
