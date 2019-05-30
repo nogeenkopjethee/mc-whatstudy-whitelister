@@ -99,7 +99,9 @@ app.post('/mcwsapi/add', (req, res, next) => {
                 }
             });
             res.send(JSON.stringify(toAdd));
-            reloadWhitelist();
+            if (process.env.RCON_ON == true) {
+                reloadWhitelist();
+            }
         })
     };
 
