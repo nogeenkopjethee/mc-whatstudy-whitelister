@@ -1,8 +1,10 @@
+require('dotenv').config()
 const express = require('express');
 const axios = require('axios');
+const Rcon = require('modern-rcon');
 const app = express();
 const fs = require('fs');
-const port = 3000;
+const port = process.env.PORT;
 
 app.use(express.json());
 
@@ -73,7 +75,7 @@ app.post('/mcwsapi/add', (req, res, next) => {
                 listOfStudentNumbers.push(entry.studentNumber);
             });
             if (listOfStudentNumbers.includes(studentNumber)) {
-                next(error);
+                next("Student number is already in this list.");
             } else {
                 appendToWhitelist();
             }
@@ -97,8 +99,21 @@ app.post('/mcwsapi/add', (req, res, next) => {
                 }
             });
             res.send(JSON.stringify(toAdd));
+            reloadWhitelist();
         })
     };
+
+    function reloadWhitelist() {
+        const rcon = new Rcon(process.env.RCON_IP, port = process.env.RCON_PASS, process.env.RCON_PASS);
+
+        rcon.connect().then(() => {
+            return rcon.send('whitelist reload'); // That's a command for Minecraft
+        }).then(res => {
+            console.log(res);
+        }).then(() => {
+            return rcon.disconnect();
+        });
+    }
 
     // Part 1: checking if the token and username have a correct length
     if (req.body.username.length !== 0 && req.body.username.length <= 16 && req.body.token.length == 48) {
