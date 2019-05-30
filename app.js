@@ -98,7 +98,7 @@ app.post('/mcwsapi/add', (req, res, next) => {
     req.accepts('application/json');
     if (!req.is('application/json')) {
         // Send error here
-        next(error);
+        next("Incorrect format.");
     }
 
     // Part 1: checking if the token and username have a correct length
