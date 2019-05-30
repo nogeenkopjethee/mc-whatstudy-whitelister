@@ -106,7 +106,7 @@ app.post('/mcwsapi/add', (req, res, next) => {
         username = req.body.username;
         token = req.body.token;
     } else {
-        next(error);
+        next("The sent data is incorrect.");
     }
 
     usernameCheck();
