@@ -22,6 +22,12 @@ app.listen(port, function (err) {
 
 
 app.post('/mcwsapi/add', (req, res, next) => {
+    req.accepts('application/json')
+    if (!req.is('application/json')) {
+        // Send error here
+        next("Incorrect format.");
+    }
+
     var username;
     var token;
     var userId;
@@ -91,17 +97,11 @@ app.post('/mcwsapi/add', (req, res, next) => {
                 }
             });
             res.send(JSON.stringify(toAdd));
-    }
-
-
-    req.accepts('application/json');
-    if (!req.is('application/json')) {
-        // Send error here
-        next("Incorrect format.");
-    }
+        })
+    };
 
     // Part 1: checking if the token and username have a correct length
-    if (req.body.username.length !== 0 && req.body.username.length <= 16 && req.body.token.length === 48) {
+    if (req.body.username.length !== 0 && req.body.username.length <= 16 && req.body.token.length == 48) {
         username = req.body.username;
         token = req.body.token;
     } else {
