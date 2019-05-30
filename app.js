@@ -90,8 +90,7 @@ app.post('/mcwsapi/add', (req, res, next) => {
                     next(error);
                 }
             });
-            res.send("Entry succesfully added to whitelist.");
-        });
+            res.send(JSON.stringify(toAdd));
     }
 
 
