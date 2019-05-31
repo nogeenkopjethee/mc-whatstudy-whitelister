@@ -1,8 +1,6 @@
-# Minecraft WhatStudy Whitelister #
+# Minecraft WhatStudy Whitelister API #
 
 This is the backend for Minecraft WhatStudy, a little hobby project. Also the first time I'm trying out Node.js Express.
-
-Made to work with this frontend: https://github.com/tcarbonclocks/mc-whatstudy
 
 The goal of this project is to create an automatic whitelist for a Minecraft server for HBO-ICT students by using `whitelist.json`.
 
