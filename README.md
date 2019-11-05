@@ -1,5 +1,7 @@
 # Minecraft WhatStudy #
 
+**Update: I no longer have access to EPIC (only for first years). If you want to try something with ths code, you can.**
+
 If you're wondering what this is: I once joked about making a website that uses an authentication system by school to create a Minecraft server. I also wanted to try out Node a bit and I got it to work. It's not that useful though.
 
 This repo contains the front- and backend to Minecraft WhatStudy. 
